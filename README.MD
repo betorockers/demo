@@ -1,3 +1,21 @@
+# API de Análisis de Sentimientos - Grupo 10
+
+## Endpoints
+- **POST `/sentiment`**: Recibe un JSON `{"text": "..."}` y devuelve la predicción.
+- **GET `/health`**: Verifica si la API está en línea.
+
+## Requisitos
+- Java 17
+- Maven
+- Python con FastAPI (Puerto 8000)
+
+## Ejecución
+```bash
+./mvnw spring-boot:run 
+
+
+
+
 Análisis de los Resultados (QA Report)
 
     1. Prueba de Texto Positivo: ¡Lograda! El servidor respondió un 200 OK y devolvió el JSON esperado.
