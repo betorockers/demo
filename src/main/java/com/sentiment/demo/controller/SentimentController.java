@@ -2,6 +2,7 @@ package com.sentiment.demo.controller;
 
 import com.sentiment.demo.dto.ErrorResponse;
 import com.sentiment.demo.dto.SentimentResponse;
+import com.sentiment.demo.service.SentimentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -11,6 +12,13 @@ import java.util.Map;
 public class SentimentController {
 
     private static final int MIN_LEN = 3;
+    private static final int MAX_LEN = 2000;
+
+    private final SentimentService sentimentService;
+
+    public SentimentController(SentimentService sentimentService) {
+        this.sentimentService = sentimentService;
+    }
 
     @PostMapping
     public ResponseEntity<?> analizar(@RequestBody Map<String, String> body) {
@@ -23,9 +31,16 @@ public class SentimentController {
                 .body(new ErrorResponse("Error: El campo 'text' es obligatorio."));
         }
 
-        if (texto.trim().length() < MIN_LEN) {
+        String clean = texto.trim();
+
+        if (clean.length() < MIN_LEN) {
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse("El campo 'text' debe tener al menos " + MIN_LEN + " caracteres."));
+        }
+
+        if (clean.length() > MAX_LEN) {
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("El campo 'text' no puede superar " + MAX_LEN + " caracteres."));
         }
         
         // 3. Por ahora, devolvemos una respuesta "ficticia" (Mock) 
@@ -33,8 +48,7 @@ public class SentimentController {
         //return ResponseEntity.ok(new SentimentResponse("Positivo", 0.99));
 
         // simulamos un analisis positivo de probabalidad
-        SentimentResponse respuestaExitosa = new SentimentResponse("positivo", 0.95);
-
-        return ResponseEntity.ok(respuestaExitosa);
+        SentimentResponse respuesta = sentimentService.predict(clean);
+        return ResponseEntity.ok(respuesta);
     }
 }

@@ -5,13 +5,32 @@ import com.sentiment.demo.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.ResourceAccessException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // 400 lo manejan en controller (validaciones)
+
+    // ✅ 503 cuando NO hay conexión / timeout con FastAPI
+    @ExceptionHandler({ResourceAccessException.class, ModelUnavailableException.class})
+    public ResponseEntity<ErrorResponse> handleModelUnavailable(Exception ex) {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ErrorResponse("Modelo no disponible"));
+    }
+
+    // ✅ 502 cuando FastAPI responde 4xx/5xx (la app DS sí está, pero falla)
+    @ExceptionHandler(HttpStatusCodeException.class)
+    public ResponseEntity<ErrorResponse> handleDsHttpError(HttpStatusCodeException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_GATEWAY)
+                .body(new ErrorResponse("Error del servicio de predicción (DS)"));
+    }
+
     // Si el backend recibe algo raro o se cae una parte, devolver un JSON amigable
-    
+    // ✅ 500 genérico (último recurso)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
         return ResponseEntity

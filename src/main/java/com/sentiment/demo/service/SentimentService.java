@@ -1,6 +1,8 @@
 package com.sentiment.demo.service;
 
 import com.sentiment.demo.dto.SentimentResponse;
+import com.sentiment.demo.exception.ModelUnavailableException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -36,16 +38,13 @@ public class SentimentService {
                     );
 
             return new SentimentResponse(
-                    response.get("label").toString(),
-                    ((Number)response.get("probability")).doubleValue()
+                    response.get("prevision").toString(),
+                    ((Number)response.get("probabilidad")).doubleValue()
             );
 
         } catch (Exception ex) {
 
-            return new SentimentResponse(
-                    "Error: Modelo no disponible",
-                    0.0
-            );
+            throw new ModelUnavailableException("Modelo no disponible", ex);
         }
     }
 }
