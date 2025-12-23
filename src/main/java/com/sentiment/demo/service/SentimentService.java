@@ -1,5 +1,6 @@
 package com.sentiment.demo.service;
 
+import com.sentiment.demo.dto.Prevision;
 import com.sentiment.demo.dto.SentimentResponse;
 import com.sentiment.demo.exception.ModelUnavailableException;
 
@@ -25,7 +26,7 @@ public class SentimentService {
     public SentimentResponse predict(String text) {
 
         if (mode.equalsIgnoreCase("mock")) {
-            return new SentimentResponse("Positivo", 0.95);
+            return new SentimentResponse(Prevision.POSITIVO, 0.95,"");
         }
 
         try {
@@ -38,8 +39,9 @@ public class SentimentService {
                     );
 
             return new SentimentResponse(
-                    response.get("prevision").toString(),
-                    ((Number)response.get("probabilidad")).doubleValue()
+                    Prevision.valueOf(response.get("prevision").toString()),
+                    ((Number)response.get("probabilidad")).doubleValue(),
+                    ""
             );
 
         } catch (Exception ex) {
