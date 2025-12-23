@@ -1,6 +1,5 @@
 package com.sentiment.demo.controller;
 
-import com.sentiment.demo.dto.ErrorResponse;
 import com.sentiment.demo.dto.SentimentResponse;
 import com.sentiment.demo.service.SentimentService;
 import org.springframework.http.ResponseEntity;

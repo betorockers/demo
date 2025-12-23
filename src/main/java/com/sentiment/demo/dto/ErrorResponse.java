@@ -1,19 +1,7 @@
 package com.sentiment.demo.dto;
 
-public class ErrorResponse {
-    private String error;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public ErrorResponse() {}
+public record ErrorResponse(@JsonProperty("error") String error) {
 
-    public ErrorResponse(String error) {
-        this.error = error;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
 }

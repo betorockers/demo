@@ -1,16 +1,12 @@
 package com.sentiment.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonInclude(JsonInclude.Include.NON_NULL) // omite null en JSON
-public record SentimentResponse(
+public record SentimentRequest(
         @JsonProperty("prevision") Prevision prevision,  // Positivo, Negativo, Neutro
         @JsonProperty("probabilidad") double probabilidad, // 0–1
         @JsonProperty("error") String error // Mensaje de error si algo falla
-) {
-    // Constructor alternativo solo para error
-    public SentimentResponse(String error) {
-        this(null, 0.0, error);
-    }
+                               )
+{
+    
 }
