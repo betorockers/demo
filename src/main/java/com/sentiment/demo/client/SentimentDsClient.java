@@ -14,11 +14,24 @@ import java.util.Map;
 public class SentimentDsClient {
 
     private final RestTemplate restTemplate;
-    private final String pythonUrl;
+    private final String baseUrl;
+    private final String predictPath;
+    private final String healthPath;
 
-    public SentimentDsClient(RestTemplate restTemplate, @Value("${python.api.url}") String pythonUrl) {
+    public SentimentDsClient(RestTemplate restTemplate,
+                             @Value("${python.api.base-url}") String baseUrl,
+                             @Value("${python.api.predict-path}") String predictPath,
+                             @Value("${python.api.health-path}") String healthPath) {
         this.restTemplate = restTemplate;
-        this.pythonUrl = pythonUrl;
+        this.baseUrl = baseUrl;
+        this.predictPath = predictPath;
+        this.healthPath = healthPath;
+    }
+
+    private String url(String path){
+        String b = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length()-1): baseUrl;
+        String p = path.startsWith("/") ? path : "/" + path;
+        return b + p;
     }
 
     /**
@@ -43,9 +56,10 @@ public class SentimentDsClient {
     }
 
     private SentimentResponse doCall(String text) {
+        String predictUrl = url(predictPath);
         Map<String, Object> response =
                 restTemplate.postForObject(
-                        pythonUrl,
+                        predictUrl,
                         Map.of("text", text),
                         Map.class
                 );
@@ -76,5 +90,10 @@ public class SentimentDsClient {
         }
 
         return new SentimentResponse(prevision, probabilidad);
+    }
+
+    public void healthCheck(){
+        String healthUrl = url(healthPath);
+        restTemplate.getForObject(healthUrl,String.class);
     }
 }
