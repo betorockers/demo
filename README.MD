@@ -1,127 +1,85 @@
-# Sentiment Analysis Backend (Demo)
+# 🎭 Sentiment Analysis API
 
-Backend en Spring Boot para análisis de sentimientos. Diseñado para la Hackathon, con capacidad de operar en modo aislado (Mock) o integrado con IA (Python).
+Backend para análisis de sentimientos que se integra con un modelo de Data Science (FastAPI).
 
-## 🚀 Quickstart (30 segundos)
+## 🚀 Quickstart (Modo Jurado)
 
-1. **Requisitos**: Java 17+ y Maven (o Docker).
-2. **Ejecutar**:
-   ```bash
-   # Windows (PowerShell)
-   .\mvnw.cmd spring-boot:run
-   
-   # Linux/Mac
-   ./mvnw spring-boot:run
-   ```
-3. **Probar**:
-   ```bash
-   curl -X POST http://localhost:8080/sentiment \
-        -H "Content-Type: application/json" \
-        -d "{\"text\": \"Este proyecto es increíble\"}"
-   ```
+Para levantar la aplicación en **30 segundos** (requiere Java 21):
+
+**Windows:**
+```powershell
+./mvnw.cmd spring-boot:run
+```
+
+**Linux/Mac:**
+```bash
+./mvnw spring-boot:run
+```
+
+La API estará disponible en: `http://localhost:8080`
+
+---
 
 ## ⚙️ Modos de Ejecución
 
-El backend se adapta automáticamente mediante la variable `SENTIMENT_MODE`.
+La aplicación puede funcionar en dos modos, configurables en `application.properties`:
 
-### 1. Modo MOCK (Por defecto)
-- **Config**: `SENTIMENT_MODE=mock`
-- **Comportamiento**: No requiere Python. Devuelve respuestas simuladas (ideal para demos rápidas o pruebas de UI).
+### 1. Modo Mock (Por defecto)
+Ideal para pruebas sin depender del servicio de Python.
+- **Config:** `sentiment.mode=mock`
+- **Comportamiento:** Devuelve siempre una respuesta fija (simulada).
+- **Estado:** `/health/model` devolverá `status: OK, mode: mock`.
 
-### 2. Modo PYTHON (Real)
-- **Config**: 
-  - `SENTIMENT_MODE=python`
-  - `PYTHON_API_URL=http://localhost:8000/predict`
-- **Comportamiento**: Actúa como proxy hacia el microservicio FastAPI para inferencia real con IA.
+### 2. Modo Python (Real)
+Se conecta al servicio de Data Science.
+- **Config:** `sentiment.mode=python`
+- **Url:** `python.api.url=http://localhost:8000` (ajustable)
+- **Comportamiento:** Envía el texto a FastAPI y devuelve la predicción real.
+- **Estado:** `/health/model` intentará hacer ping al servicio de Python.
 
-## 📡 Contrato de API
+---
 
-### POST `/sentiment`
+## 📡 Endpoints Principales
 
-**Request Body:**
+### 1. Analizar Sentimiento
+**POST** `/sentiment`
+
+Body:
 ```json
 {
-  "text": "Texto a analizar (mín 3 caracteres)"
+  "text": "Este proyecto es increíble y funciona muy bien"
 }
 ```
 
-Linux:
-```bash
-./mvnw -Dtest=SentimentControllerMockMvcTest test
-**Response Body:**
+Respuesta (200 OK):
 ```json
 {
-  "sentiment": "POSITIVO",  // [POSITIVO, NEGATIVO, NEUTRO]
-  "score": 0.95
+  "prevision": "Positivo",
+  "probabilidad": 0.99
 }
 ```
 
-Si quieres correr todos los tests:
-```bash
-./mvnw test
-```
-## 🛠 Troubleshooting
-
----
-- **Puerto 8080 ocupado**: Asegúrate de liberar el puerto o cambiar `server.port` en `application.properties`.
-- **Error de conexión**: Si estás en modo `python`, verifica que el contenedor de FastAPI esté levantado (`docker ps`).
-
-## Ejemplos curl
-## 🐳 Docker
-
-Texto válido (esperar 200):
-Ejecutar todo el stack:
-```bash
-curl -i -X POST http://localhost:8080/sentiment \
-  -H "Content-Type: application/json" \
-  -d '{"text":"Este producto es la raja"}'
-docker-compose up --build
+### 2. Estadísticas
+**GET** `/stats`
+Retorna métricas básicas en memoria.
+```json
+{
+  "total_requests": 5,
+  "status": "active"
+}
 ```
 
-Texto inválido (esperar 400):
-```bash
-curl -i -X POST http://localhost:8080/sentiment -H "Content-Type: application/json" -d '{}'
-```
+### 3. Health Checks
+- **GET** `/health`: Estado general del servicio (Liveness).
+- **GET** `/health/model`: Estado de la conexión con el modelo de IA (Readiness).
 
 ---
 
-## Troubleshooting (errores comunes)
+## 🛠️ Troubleshooting
 
-- "class file version 65.0 ... only recognizes up to 61.0": significa que compilaste con Java 21 pero la JVM que corre los tests es Java 17. Asegurate que `java -version` y `./mvnw -v` muestren Java 21.
-- Si no puedes cambiar JAVA_HOME en el PC ahora, puedes correr los tests sin forking (workaround local):
-  ```bash
-  ./mvnw -Dsurefire.forkCount=0 -Dtest=SentimentControllerMockMvcTest test
-  ```
+**Error: "Modelo no disponible" (503)**
+- Verifica que `sentiment.mode` esté en `mock` si no tienes Python corriendo.
+- Si usas `python`, asegura que FastAPI esté levantado en el puerto 8000.
 
----
-
-## Contribuir / checklist dev4
-
-- Crear tests MockMvc (ya hay un par en `src/test/...`).
-- Documentar pasos en README (esto que estás leyendo).
-- Exportar colección Postman y subir a `postman/`.
-- (Opcional) Dockerizar: `Dockerfile` + `docker-compose` para demo con placeholder del FastAPI.
-
-## Endpoints
-- **POST `/sentiment`**: Recibe un JSON `{"text": "..."}` y devuelve la predicción.
-- **GET `/health`**: Verifica si la API está en línea.
-
-## Requisitos
-- Java 17
-- Maven
-- Python con FastAPI (Puerto 8000)
-
-## Ejecución
-```bash
-./mvnw spring-boot:run 
-
-
-
-
-Análisis de los Resultados (QA Report)
-
-    1. Prueba de Texto Positivo: ¡Lograda! El servidor respondió un 200 OK y devolvió el JSON esperado.
-
-    2. Prueba de Validación (Texto Vacío): ¡Lograda y muy importante! Viste que salió un HTTP/1.1 400. Esto significa que el trabajo del Dev 2 (validaciones) está funcionando: el sistema no se rompió, sino que le avisó al usuario que cometió un error.
-
-    3. Prueba de Texto Largo: ¡Lograda! El sistema procesó la cadena larga sin problemas de memoria o desbordamiento.
+**Error: Java version**
+- Este proyecto requiere **Java 21**. Verifica con `java -version`.

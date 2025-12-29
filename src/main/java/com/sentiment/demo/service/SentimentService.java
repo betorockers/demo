@@ -29,4 +29,13 @@ public class SentimentService {
         }
         return dsClient.predict(text);
     }
+
+    /**
+     * Verifica la conexión con el modelo si no estamos en modo mock.
+     */
+    public void checkHealth() {
+        if (!"mock".equalsIgnoreCase(mode)) {
+            dsClient.healthCheck();
+        }
+    }
 }
