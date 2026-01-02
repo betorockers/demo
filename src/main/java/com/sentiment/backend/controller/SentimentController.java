@@ -1,11 +1,12 @@
-package com.sentiment.demo.controller;
+package com.sentiment.backend.controller;
 
-import com.sentiment.demo.dto.SentimentRequest;
-import com.sentiment.demo.dto.SentimentResponse;
-import com.sentiment.demo.service.SentimentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.sentiment.backend.dto.SentimentRequest;
+import com.sentiment.backend.dto.SentimentResponse;
+import com.sentiment.backend.service.SentimentService;
 
 
 @RestController

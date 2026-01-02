@@ -1,4 +1,4 @@
-package com.sentiment.demo;
+package com.sentiment.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

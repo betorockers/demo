@@ -1,4 +1,4 @@
-package com.sentiment.demo.dto;
+package com.sentiment.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
