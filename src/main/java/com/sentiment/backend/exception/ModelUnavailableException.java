@@ -1,4 +1,4 @@
-package com.sentiment.demo.exception;
+package com.sentiment.backend.exception;
 
 public class ModelUnavailableException extends RuntimeException {
     public ModelUnavailableException(String message, Throwable cause) {

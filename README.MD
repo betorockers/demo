@@ -1,4 +1,4 @@
-# 🎭 Sentiment Analysis API - Demo
+# 🎭 Sentiment Analysis API - Backend
 
 API REST para análisis de sentimientos, diseñada para integrarse con modelos de IA (FastAPI) o funcionar en modo Mock para demostraciones rápidas.
 
@@ -44,7 +44,7 @@ El comportamiento se controla vía `application.properties` o variables de entor
 ### 1. Analizar Sentimiento
 - **POST** `/sentiment`
 - **Body**: `{ "text": "Texto a analizar" }`
-- **Response**: `{ "sentiment": "POSITIVO", "score": 0.95 }`
+- **Response**: `{ "prevision": "POSITIVO", "probabilidad": 0.95 }`
 
 ### 2. Health Check
 - **GET** `/actuator/health` o `/health` (si está configurado)
@@ -60,6 +60,16 @@ El comportamiento se controla vía `application.properties` o variables de entor
 
 **Error: Java version**
 - Este proyecto requiere **Java 17**. Verifica con `java -version`.
+
+---
+
+## 🧪 Casos de Prueba (QA)
+
+| Caso | Input | Código Esperado |
+|------|-------|-----------------|
+| **Éxito** | `{"text": "Hola mundo"}` | **200 OK** |
+| **Error Validación** | `{"text": ""}` | **400 Bad Request** |
+| **Modelo Caído** | (Simular apagando Python) | **503 Service Unavailable** |
 
 ---
 

@@ -1,12 +1,14 @@
-package com.sentiment.demo.exception;
+package com.sentiment.backend.exception;
 
-import com.sentiment.demo.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.ResourceAccessException;
+
+import com.sentiment.backend.dto.ErrorResponse;
+
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Objects;

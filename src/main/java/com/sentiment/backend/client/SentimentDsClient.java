@@ -1,12 +1,13 @@
-package com.sentiment.demo.client;
+package com.sentiment.backend.client;
 
-import com.sentiment.demo.dto.Prevision;
-import com.sentiment.demo.dto.SentimentResponse;
-import com.sentiment.demo.exception.ModelUnavailableException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+
+import com.sentiment.backend.dto.Prevision;
+import com.sentiment.backend.dto.SentimentResponse;
+import com.sentiment.backend.exception.ModelUnavailableException;
 
 import java.util.Map;
 
